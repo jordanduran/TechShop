@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Row,
@@ -9,11 +9,19 @@ import {
   Button,
   ListGroupItem,
 } from 'react-bootstrap';
+import axios from 'axios';
 import Rating from '../components/Rating';
-import products from '../products';
 
 const ProductScreen = ({ match }) => {
-  const product = products.find((product) => product._id === match.params.id);
+  const [product, setProduct] = useState({});
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      const { data } = await axios.get(`/api/products/${match.params.id}`);
+      setProduct(data);
+    };
+    fetchProduct();
+  }, []);
 
   return (
     <Fragment>
