@@ -1,0 +1,22 @@
+{
+  "name": "techshop",
+  "version": "1.0.0",
+  "description": "MERN Tech shop application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node backend/server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jordanduran/TechShop.git"
+  },
+  "author": "Jordan Duran",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jordanduran/TechShop/issues"
+  },
+  "homepage": "https://github.com/jordanduran/TechShop#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
