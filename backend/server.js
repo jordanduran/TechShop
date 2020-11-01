@@ -3,13 +3,17 @@ const products = require('./data/products');
 
 const app = express();
 
-// Get all products
+app.get('/', (req, res) => {
+  res.send('API is running!');
+});
+
+// GET all products
 
 app.get('/api/products', (req, res) => {
   res.json(products);
 });
 
-// Get single product
+// GET single product
 
 app.get('/api/products/:id', (req, res) => {
   const product = products.find((product) => product._id === req.params.id);
