@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -9,13 +9,16 @@ import {
   Card,
   Button,
   ListGroupItem,
+  Form,
 } from 'react-bootstrap';
 import Rating from '../components/Rating';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { listProductDetails } from '../actions/productActions.js';
 
-const ProductScreen = ({ match }) => {
+const ProductScreen = ({ history, match }) => {
+  const [qty, setQty] = useState(0);
+
   const dispatch = useDispatch();
 
   const productDetails = useSelector((state) => state.productDetails);
@@ -24,6 +27,10 @@ const ProductScreen = ({ match }) => {
   useEffect(() => {
     dispatch(listProductDetails(match.params.id));
   }, [dispatch, match]);
+
+  const addToCartHandler = (e) => {
+    history.push(`/cart/${match.params.id}?qty=${qty}`);
+  };
 
   return (
     <Fragment>
@@ -36,10 +43,10 @@ const ProductScreen = ({ match }) => {
         <Message variant='danger'>{error}</Message>
       ) : (
         <Row>
-          <Col md={6}>
+          <Col className='product-page-section' md={6}>
             <Image src={product.image} alt={product.name} fluid />
           </Col>
-          <Col md={3}>
+          <Col className='product-page-section' md={3}>
             <ListGroup variant='flush'>
               <ListGroupItem>
                 <h3>{product.name}</h3>
@@ -54,27 +61,50 @@ const ProductScreen = ({ match }) => {
               <ListGroupItem>Description: {product.description}</ListGroupItem>
             </ListGroup>
           </Col>
-          <Col md={3}>
+          <Col className='product-page-section' md={3}>
             <Card>
               <ListGroup variant='flush'>
                 <ListGroupItem>
                   <Row>
-                    <Col>Price:</Col>
-                    <Col>
+                    <Col className='product-page-section'>Price:</Col>
+                    <Col className='product-page-section'>
                       <strong>{product.price}</strong>
                     </Col>
                   </Row>
                 </ListGroupItem>
                 <ListGroupItem>
                   <Row>
-                    <Col>Status:</Col>
-                    <Col>
+                    <Col className='product-page-section'>Status:</Col>
+                    <Col className='product-page-section'>
                       {product.countInStock > 0 ? 'In Stock' : 'Out Of Stock'}
                     </Col>
                   </Row>
                 </ListGroupItem>
+
+                {product.countInStock > 0 && (
+                  <ListGroupItem>
+                    <Row>
+                      <Col className='product-page-section'>Qty</Col>
+                      <Col className='product-page-section'>
+                        <Form.Control
+                          as='select'
+                          value={qty}
+                          onChange={(e) => setQty(e.target.value)}
+                        >
+                          {[...Array(product.countInStock).keys()].map((x) => (
+                            <option key={x + 1} value={x + 1}>
+                              {x + 1}
+                            </option>
+                          ))}
+                        </Form.Control>
+                      </Col>
+                    </Row>
+                  </ListGroupItem>
+                )}
+
                 <ListGroupItem>
                   <Button
+                    onClick={addToCartHandler}
                     className='btn-block'
                     type='button'
                     disabled={product.countInStock === 0}
